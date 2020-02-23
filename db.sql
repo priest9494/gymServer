@@ -28,6 +28,10 @@ CREATE TABLE subs (
     note varchar(200)
 );
 
+SELECT subs.begin_date, subs.end_date, subs.training_left, subs.left_to_pay, clients.fio, types.title, types.training, types.cost
+FROM subs, clients, types
+WHERE (subs.type_id = types.id AND subs.client_id = clients.id);
+
 CREATE TABLE clients (
     id SERIAL PRIMARY KEY,
     fio varchar(100),

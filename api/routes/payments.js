@@ -18,19 +18,9 @@ router.post("/add", async (req, res) => {
         return;
     }
 
-    // Get sub
-    let sub = await database
-    .select()
-    .from('subs')
-    .where({
-        id: req.body.sub_id
-    });
-
     // Update left to pay
     await database('subs')
-    .update({
-        left_to_pay: sub[0].left_to_pay - req.body.payment_amount
-    })
+    .decrement('left_to_pay', req.body.payment_amount)
     .where({
         id: req.body.sub_id
     });
