@@ -7,11 +7,16 @@ const dateFormat = require('dateformat');
 // Get client info route. {sub_number}
 router.post("/getInfo", async (req, res) => {
     let query = await database
-    .raw("SELECT subs.begin_date, subs.end_date, subs.training_left, subs.left_to_pay, clients.fio, types.title, types.training, types.cost FROM subs, clients, types WHERE (subs.type_id = types.id AND subs.client_id = clients.id AND subs.sub_number = '" + req.body.sub_number + "');");
-    
-    res.send(query.rows);
-});
+        .select('begin_date', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost')
+        .from('subs')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .join('types', 'subs.type_id', 'types.id')
+        .where('sub_number', req.body.sub_number)
+        .first();
 
+
+    res.send(query);
+});
 
 // Register client route. {sub_number}
 router.post("/markVisit", async (req, res) => {

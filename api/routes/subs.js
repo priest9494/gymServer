@@ -8,6 +8,46 @@ const dateFormat = require('dateformat');
 // Validation module (check id exists)
 const valid = require("../../validation/subsValidation");
 
+
+// Get sub info by FIO. {sub_number}
+router.post("/getSubByFio", async (req, res) => {
+    let query = await database
+        .select('sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'phone_number', 'title', 'training', 'cost', 'trainers.fio as trainer_fio')
+        .from('subs')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .join('types', 'subs.type_id', 'types.id')
+        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`);
+
+    res.send(query);
+});
+
+// Get sub info by phone number route. {sub_number}
+router.post("/getSubByPhoneNumber", async (req, res) => {
+    let query = await database
+        .select('sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'phone_number', 'title', 'training', 'cost', 'trainers.fio as trainer_fio')
+        .from('subs')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .join('types', 'subs.type_id', 'types.id')
+        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .where('phone_number', 'ilike' , `%${req.body.phone_number}%`);
+
+    res.send(query);
+});
+
+// Get sub info by sub number route. {sub_number}
+router.post("/getSubBySubNumber", async (req, res) => {
+    let query = await database
+        .select('sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'phone_number', 'title', 'training', 'cost', 'trainers.fio as trainer_fio')
+        .from('subs')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .join('types', 'subs.type_id', 'types.id')
+        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .where('sub_number', req.body.sub_number);
+
+    res.send(query);
+});
+
 // Add sub route
 router.post("/add", async (req, res) => {
     // ID's validation

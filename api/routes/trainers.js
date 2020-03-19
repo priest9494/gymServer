@@ -3,6 +3,16 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+// Find trainer by fio route
+router.post("/findByFio", async(req, res) => {
+    let query = await database
+    .select()
+    .from('trainers')
+    .where('fio', 'ilike' , `%${req.body.fio}%`);
+
+    res.send(query);
+})
+
 // Get all trainers route
 router.get("/get", async (req, res) => {
     let trainers = await database

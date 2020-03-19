@@ -57,35 +57,49 @@ router.get("/remove/:id", async (req, res) => {
 router.get("/fill", (req, res) => {
     let nodes = [
         {
-            fio: 'Первый',
-            phone_number: '123',
+            fio: 'Иванов Иван Иванович',
+            phone_number: '+79999999999',
             first_visit_date: '28-01-2020',
             how_to_find: 'гугл',
             inviter_id: '-1',
             note: 'фыв'
         },
         {
-            fio: 'Второй',
-            phone_number: '321',
+            fio: 'Петров Петр Петрович',
+            phone_number: '+79999990000',
             first_visit_date: '28-05-2018',
             how_to_find: 'яндекс',
             inviter_id: '1',
             note: 'ййцу'
         },{
-            fio: 'Третий',
-            phone_number: '331--()312',
+            fio: 'Иванов Иван Петрович',
+            phone_number: '+76666666666',
             first_visit_date: '28-01-2014',
             how_to_find: '2гис',
             inviter_id: '2',
             note: 'фыв'
         },{
-            fio: 'Четвертый',
-            phone_number: '33333(3-)00(',
+            fio: 'Петров Петр Геннадьевич',
+            phone_number: '+79618465050',
             first_visit_date: '14-12-2000',
             how_to_find: 'друг',
             inviter_id: '1',
             note: 'ааааааааааааа'
-        },
+        },{
+            fio: 'Муковин Алексей Сергеевич',
+            phone_number: '+79505858998',
+            first_visit_date: '14-01-2020',
+            how_to_find: 'друг',
+            inviter_id: '1',
+            note: 'ааааааааааааа'
+        },{
+            fio: 'Князев Роман Игоревич',
+            phone_number: '+79876543223',
+            first_visit_date: '06-03-2020',
+            how_to_find: 'дун',
+            inviter_id: '-1',
+            note: 'ааааааааааааа'
+        }
     ];
 
     nodes.forEach(async element => {

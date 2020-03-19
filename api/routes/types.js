@@ -3,6 +3,17 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+
+// Find type by title route
+router.post("/findByTitle", async(req, res) => {
+    let query = await database
+    .select()
+    .from('types')
+    .where('title', 'ilike' , `%${req.body.title}%`);
+
+    res.send(query);
+})
+
 // Add type route
 router.post("/add", async (req, res) => {
     await database('types').
