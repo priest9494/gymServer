@@ -3,6 +3,21 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+
+//Edit trainer by ID route
+router.post("/edit", async(req, res) => {
+    await database('trainers')
+        .update({
+            fio: req.body.fio,
+            date_birth: req.body.bdate
+        })
+        .where({
+            id: req.body.id
+        })
+
+    res.sendStatus(200);
+})
+
 // Find trainer by fio route
 router.post("/findByFio", async(req, res) => {
     let query = await database

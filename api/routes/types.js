@@ -4,6 +4,21 @@ const router = express.Router();
 const database = require("../../database");
 
 
+//Edit sub type by ID route
+router.post("/edit", async(req, res) => {
+    await database('types')
+        .update({
+            title: req.body.title,
+            cost: req.body.cost,
+            training: req.body.training
+        })
+        .where({
+            id: req.body.id
+        })
+
+    res.sendStatus(200);
+})
+
 // Find type by title route
 router.post("/findByTitle", async(req, res) => {
     let query = await database
@@ -20,7 +35,7 @@ router.post("/add", async (req, res) => {
     insert({
         title: req.body.title,
         cost: req.body.cost,
-        training: req.body.trains
+        training: req.body.training
     });
 
     res.sendStatus(200);

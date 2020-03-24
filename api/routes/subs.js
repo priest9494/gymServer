@@ -8,7 +8,6 @@ const dateFormat = require('dateformat');
 // Validation module (check id exists)
 const valid = require("../../validation/subsValidation");
 
-
 // Get sub info by FIO. {sub_number}
 router.post("/getSubByFio", async (req, res) => {
     let query = await database

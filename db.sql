@@ -8,7 +8,7 @@ DROP TABLE trainers;
 
 CREATE TABLE types (
     id SERIAL PRIMARY KEY,
-    title varchar(30),
+    title varchar(50),
     cost integer,
     training smallint
 );
@@ -34,7 +34,7 @@ CREATE TABLE clients (
     phone_number varchar(18),
     first_visit_date date,
     how_to_find varchar(16),
-    inviter_id integer,
+    inviter_phone varchar(18),
     note varchar(200),
     photo bytea
 );
@@ -86,7 +86,7 @@ INSERT INTO trainers (fio, date_birth)
         ('Тренерова Тренерша Тренеровна', '10-10-2010'),
         ('Занятьева training Занятьевна', '21-12-2013');
 
-INSERT INTO clients (fio, phone_number, first_visit_date, how_to_find, inviter_id, note)
+INSERT INTO clients (fio, phone_number, first_visit_date, how_to_find, inviter_phone, note)
     VALUES
         ('Дунаев Никита Юрьевич', '+7(777)777-77-77', '20-10-2019', '2гис', -1, 'Какое-то note'),
         ('Степанов Мирослав Даниилович', '+7(999)999-99-99', '20-10-2018', 'Яндекс', -1, 'аоаоао'),

@@ -4,6 +4,27 @@ const router = express.Router();
 const database = require("../../database");
 const dateFormat = require('dateformat');
 
+
+// Get client info by phone number. {phone_number}
+router.post("/getClientByPhoneNumber", async (req, res) => {
+    let query = await database
+        .select()
+        .from('clients')
+        .where('clients.phone_number', 'ilike' , `%${req.body.phone_number}%`);
+
+    res.send(query);
+});
+
+// Get client info by FIO. {fio}
+router.post("/getClientByFio", async (req, res) => {
+    let query = await database
+        .select()
+        .from('clients')
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`);
+
+    res.send(query);
+});
+
 // Add client route
 router.post("/add", async (req, res) => {
     await database("clients").
@@ -12,7 +33,7 @@ router.post("/add", async (req, res) => {
         phone_number: req.body.phone,
         first_visit_date: dateFormat(new Date(), 'yyyy-mm-dd'),
         how_to_find: req.body.how_find,
-        inviter_id: req.body.inv_id,
+        inviter_phone: req.body.inv_phone,
         note: req.body.note
     });
 
@@ -61,7 +82,7 @@ router.get("/fill", (req, res) => {
             phone_number: '+79999999999',
             first_visit_date: '28-01-2020',
             how_to_find: 'гугл',
-            inviter_id: '-1',
+            inviter_phone: '-1',
             note: 'фыв'
         },
         {
@@ -69,35 +90,35 @@ router.get("/fill", (req, res) => {
             phone_number: '+79999990000',
             first_visit_date: '28-05-2018',
             how_to_find: 'яндекс',
-            inviter_id: '1',
+            inviter_phone: '1',
             note: 'ййцу'
         },{
             fio: 'Иванов Иван Петрович',
             phone_number: '+76666666666',
             first_visit_date: '28-01-2014',
             how_to_find: '2гис',
-            inviter_id: '2',
+            inviter_phone: '2',
             note: 'фыв'
         },{
             fio: 'Петров Петр Геннадьевич',
             phone_number: '+79618465050',
             first_visit_date: '14-12-2000',
             how_to_find: 'друг',
-            inviter_id: '1',
+            inviter_phone: '1',
             note: 'ааааааааааааа'
         },{
             fio: 'Муковин Алексей Сергеевич',
             phone_number: '+79505858998',
             first_visit_date: '14-01-2020',
             how_to_find: 'друг',
-            inviter_id: '1',
+            inviter_phone: '1',
             note: 'ааааааааааааа'
         },{
             fio: 'Князев Роман Игоревич',
             phone_number: '+79876543223',
             first_visit_date: '06-03-2020',
             how_to_find: 'дун',
-            inviter_id: '-1',
+            inviter_phone: '-1',
             note: 'ааааааааааааа'
         }
     ];
