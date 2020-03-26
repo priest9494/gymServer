@@ -27,14 +27,22 @@ router.post("/getClientByFio", async (req, res) => {
 
 // Add client route
 router.post("/add", async (req, res) => {
-    await database("clients").
-    insert({
-        fio: req.body.fio,
-        phone_number: req.body.phone,
-        first_visit_date: dateFormat(new Date(), 'yyyy-mm-dd'),
-        how_to_find: req.body.how_find,
-        inviter_phone: req.body.inv_phone,
-        note: req.body.note
+    const id = await database("clients")
+        .returning('id')
+        .insert({
+            fio: req.body.fio,
+            phone_number: req.body.phone,
+            first_visit_date: req.body.first_visit_date,
+            how_to_find: req.body.how_find,
+            inviter_phone: req.body.inv_phone,
+            note: req.body.note,
+        });
+
+    var filename = id + '.png'
+
+    var base64Data = req.body.photo.replace(/^data:image\/png;base64,/, "");
+    require("fs").writeFile("clientPhotos/" + filename, base64Data, 'base64', function(err) {
+        console.log(err);
     });
 
     res.sendStatus(200);
