@@ -35,8 +35,7 @@ CREATE TABLE clients (
     first_visit_date date,
     how_to_find varchar(16),
     inviter_phone varchar(18),
-    note varchar(200),
-    photo bytea
+    note varchar(200)
 );
 
 CREATE TABLE payments (

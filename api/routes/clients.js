@@ -1,16 +1,55 @@
 // test/api/routes/clients.js
-const express = require("express");
-const router = express.Router();
-const database = require("../../database");
-const dateFormat = require('dateformat');
+const express = require("express")
+const router = express.Router()
+const database = require("../../database")
+const fs = require('fs')
 
+//Edit client by ID route
+router.post("/edit", async(req, res) => {
+    await database('clients')
+        .update({
+            fio: req.body.fio,
+            phone_number: req.body.phone,
+            first_visit_date: req.body.first_visit_date,
+            how_to_find: req.body.how_find,
+            inviter_phone: req.body.inv_phone,
+            note: req.body.note,
+        })
+        .where({
+            id: req.body.id
+        })
+
+    
+    if(req.body.photo) {
+        var filename = req.body.id + '.png'
+        var base64Data = req.body.photo.replace(/^data:image\/png;base64,/, "");
+        
+        fs.writeFile("clientPhotos/" + filename, base64Data, 'base64', function(err) {
+            console.log(err);
+        });
+    }
+    
+
+    res.sendStatus(200);
+})
 
 // Get client info by phone number. {phone_number}
 router.post("/getClientByPhoneNumber", async (req, res) => {
     let query = await database
         .select()
         .from('clients')
-        .where('clients.phone_number', 'ilike' , `%${req.body.phone_number}%`);
+        .where('clients.phone_number', 'ilike' , `%${req.body.phone_number}%`)
+        .limit(30)
+
+    query.forEach(node => {
+        let photoRes
+        try {
+            photoRes = fs.readFileSync("clientPhotos/" + node.id + '.png', 'base64')
+            node.photo = photoRes
+        } catch(err) {
+            node.photo = null
+        }
+    });
 
     res.send(query);
 });
@@ -20,8 +59,17 @@ router.post("/getClientByFio", async (req, res) => {
     let query = await database
         .select()
         .from('clients')
-        .where('clients.fio', 'ilike' , `%${req.body.fio}%`);
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+        .limit(30)
 
+    query.forEach(node => {
+        try {
+            let res = fs.readFileSync("clientPhotos/" + node.id + '.png', 'base64')
+            node.photo = res
+        } catch(err) {
+            node.photo = null
+        }
+    });
     res.send(query);
 });
 
@@ -41,7 +89,7 @@ router.post("/add", async (req, res) => {
     var filename = id + '.png'
 
     var base64Data = req.body.photo.replace(/^data:image\/png;base64,/, "");
-    require("fs").writeFile("clientPhotos/" + filename, base64Data, 'base64', function(err) {
+    fs.writeFile("clientPhotos/" + filename, base64Data, 'base64', function(err) {
         console.log(err);
     });
 

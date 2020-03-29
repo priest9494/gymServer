@@ -8,7 +8,7 @@ const clientsRoutes = require("./api/routes/clients");
 const subsRoutes = require("./api/routes/subs");
 const paymentsRoutes = require("./api/routes/payments");
 const visitsRoutes = require("./api/routes/visits");
-const subRegisterRoutes = require("./api/routes/complexQueries/clientRegister");
+const subMark = require("./api/routes/complexQueries/subMark");
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use("/v1/subs", subsRoutes);
 app.use("/v1/payments", paymentsRoutes);
 app.use("/v1/visits", visitsRoutes);
 
-app.use("/v1/register", subRegisterRoutes);
+app.use("/v1/mark", subMark);
 
 const port = process.env.PORT || 3000;
 

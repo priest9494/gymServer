@@ -17,7 +17,7 @@ router.post("/getSubByFio", async (req, res) => {
         .join('types', 'subs.type_id', 'types.id')
         .join('trainers', 'subs.trainer_id', 'trainers.id')
         .where('clients.fio', 'ilike' , `%${req.body.fio}%`);
-
+        
     res.send(query);
 });
 
