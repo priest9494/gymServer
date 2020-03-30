@@ -4,6 +4,26 @@ const router = express.Router()
 const database = require("../../database")
 const fs = require('fs')
 
+// Get 10 latest clients (default search).
+router.get("/getLatest", async (req, res) => {
+    let query = await database
+        .select()
+        .from('clients')
+        .limit(10)
+
+    query.forEach(node => {
+        let photoRes
+        try {
+            photoRes = fs.readFileSync("clientPhotos/" + node.id + '.png', 'base64')
+            node.photo = photoRes
+        } catch(err) {
+            node.photo = null
+        }
+    });
+
+    res.send(query);
+});
+
 //Edit client by ID route
 router.post("/edit", async(req, res) => {
     await database('clients')
