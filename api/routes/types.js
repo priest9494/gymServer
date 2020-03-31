@@ -3,6 +3,15 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+// Get 10 latest trainers route (default search).
+router.get("/getLatest", async (req, res) => {
+    let query = await database
+        .select()
+        .from('types')
+        .limit(10)
+        
+    res.send(query);
+});
 
 //Edit sub type by ID route
 router.post("/edit", async(req, res) => {
@@ -24,7 +33,8 @@ router.post("/findByTitle", async(req, res) => {
     let query = await database
     .select()
     .from('types')
-    .where('title', 'ilike' , `%${req.body.title}%`);
+    .where('title', 'ilike' , `%${req.body.title}%`)
+    .limit(20)
 
     res.send(query);
 })

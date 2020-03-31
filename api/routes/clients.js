@@ -59,7 +59,7 @@ router.post("/getClientByPhoneNumber", async (req, res) => {
         .select()
         .from('clients')
         .where('clients.phone_number', 'ilike' , `%${req.body.phone_number}%`)
-        .limit(30)
+        .limit(20)
 
     query.forEach(node => {
         let photoRes
@@ -80,7 +80,7 @@ router.post("/getClientByFio", async (req, res) => {
         .select()
         .from('clients')
         .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
-        .limit(30)
+        .limit(20)
 
     query.forEach(node => {
         try {

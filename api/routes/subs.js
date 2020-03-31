@@ -8,6 +8,16 @@ const dateFormat = require('dateformat');
 // Validation module (check id exists)
 const valid = require("../../validation/subsValidation");
 
+// Get 10 latest subs route (default search).
+router.get("/getLatest", async (req, res) => {
+    let query = await database
+        .select()
+        .from('subs')
+        .limit(10)
+        
+    res.send(query);
+});
+
 // Get sub info by FIO. {sub_number}
 router.post("/getSubByFio", async (req, res) => {
     let query = await database
@@ -16,7 +26,8 @@ router.post("/getSubByFio", async (req, res) => {
         .join('clients', 'subs.client_id', 'clients.id')
         .join('types', 'subs.type_id', 'types.id')
         .join('trainers', 'subs.trainer_id', 'trainers.id')
-        .where('clients.fio', 'ilike' , `%${req.body.fio}%`);
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+        .limit(20)
         
     res.send(query);
 });
@@ -29,7 +40,8 @@ router.post("/getSubByPhoneNumber", async (req, res) => {
         .join('clients', 'subs.client_id', 'clients.id')
         .join('types', 'subs.type_id', 'types.id')
         .join('trainers', 'subs.trainer_id', 'trainers.id')
-        .where('phone_number', 'ilike' , `%${req.body.phone_number}%`);
+        .where('phone_number', 'ilike' , `%${req.body.phone_number}%`)
+        .limit(20)
 
     res.send(query);
 });
@@ -42,7 +54,8 @@ router.post("/getSubBySubNumber", async (req, res) => {
         .join('clients', 'subs.client_id', 'clients.id')
         .join('types', 'subs.type_id', 'types.id')
         .join('trainers', 'subs.trainer_id', 'trainers.id')
-        .where('sub_number', req.body.sub_number);
+        .where('sub_number', 'ilike' , `%${req.body.sub_number}%`)
+        .limit(20)
 
     res.send(query);
 });

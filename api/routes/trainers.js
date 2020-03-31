@@ -3,6 +3,15 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+// Get 10 latest trainers (default search).
+router.get("/getLatest", async (req, res) => {
+    let query = await database
+        .select()
+        .from('trainers')
+        .limit(10)
+        
+    res.send(query);
+});
 
 //Edit trainer by ID route
 router.post("/edit", async(req, res) => {
@@ -21,9 +30,10 @@ router.post("/edit", async(req, res) => {
 // Find trainer by fio route
 router.post("/findByFio", async(req, res) => {
     let query = await database
-    .select()
-    .from('trainers')
-    .where('fio', 'ilike' , `%${req.body.fio}%`);
+        .select()
+        .from('trainers')
+        .where('fio', 'ilike' , `%${req.body.fio}%`)
+        .limit(20)
 
     res.send(query);
 })
