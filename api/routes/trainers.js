@@ -3,12 +3,12 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
-// Get 10 latest trainers (default search).
+// Get 50 latest trainers (default search).
 router.get("/getLatest", async (req, res) => {
     let query = await database
         .select()
         .from('trainers')
-        .limit(10)
+        .limit(50)
         
     res.send(query);
 });
