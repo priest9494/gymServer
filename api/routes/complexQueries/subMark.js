@@ -7,7 +7,7 @@ const database = require("../../../database")
 // Get client info route. {sub_number}
 router.post("/getInfo", async (req, res) => {
     var query = await database
-        .select('begin_date', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost', 'clients.id as id')
+        .select('begin_date', 'subs.note', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost', 'clients.id as id')
         .from('subs')
         .join('clients', 'subs.client_id', 'clients.id')
         .join('types', 'subs.type_id', 'types.id')
