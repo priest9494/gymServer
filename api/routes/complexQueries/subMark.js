@@ -3,11 +3,13 @@ const express = require("express")
 const fs = require('fs')
 const router = express.Router()
 const database = require("../../../database")
+const dateFormat = require('dateformat')
+
 
 // Get client info route. {sub_number}
 router.post("/getInfo", async (req, res) => {
     var query = await database
-        .select('begin_date', 'subs.note', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost', 'clients.id as id')
+        .select('subs.id as sub_id','begin_date', 'subs.note', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost', 'clients.id as id')
         .from('subs')
         .join('clients', 'subs.client_id', 'clients.id')
         .join('types', 'subs.type_id', 'types.id')
@@ -29,12 +31,26 @@ router.post("/getInfo", async (req, res) => {
 
 // Register client route. {sub_number}
 router.post("/markVisit", async (req, res) => {
+    console.log(req.body)
+    // Decrease training left of sub
     await database('subs')
     .decrement('training_left', 1)
     .where({
-        sub_number: req.body.sub_number
+        id: req.body.id
     });
     
+    // Register visit into visits
+    try {
+        await database("visits").
+        insert({
+            sub_id: req.body.id,
+            visit_date: dateFormat(new Date(), 'yyyy-mm-dd'),
+            visit_time: (new Date()).toLocaleTimeString()
+        });
+    } catch(err) {
+        console.log(err)
+    }
+
     res.sendStatus(200);
 });
 

@@ -5,36 +5,40 @@ const router = express.Router();
 const database = require("../../database");
 const dateFormat = require('dateformat');
 
-// Validation 
-const valid = require("../../validation/visitsValidation");
+// Get visits by fio route
+router.post("/getByFio", async (req, res) => {
+    let visits = await database
+        .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
+        .from('visits')
+        .join('subs', 'visits.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+        .limit(150)
 
-// Add visit route
-router.post("/add", async (req, res) => {
-    // Check sub id exists
-    let isValid = await valid(req.body.sub_id); 
+    res.send(visits);
+})
 
-    if(!isValid) {
-        res.sendStatus(400);
-        console.log(req.body);
-        return;
-    }
+// Get visits by fio route
+router.post("/getBySubNumber", async (req, res) => {
+    let visits = await database
+        .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
+        .from('visits')
+        .join('subs', 'visits.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .where('subs.sub_number', 'ilike' , `%${req.body.sub_number}%`)
+        .limit(150)
 
-    // Register visit
-    await database("visits").
-    insert({
-        sub_id: req.body.sub_id,
-        visit_date: dateFormat(new Date(), 'yyyy-mm-dd'),
-        visit_time: (new Date()).toLocaleTimeString()
-    });
-
-    res.sendStatus(200);
-});
+    res.send(visits);
+})
 
 // Get all visits route
-router.get("/get", async (req, res) => {
+router.get("/getLatest", async (req, res) => {
     let visits = await database
-    .select()
-    .from('visits');
+        .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
+        .from('visits')
+        .join('subs', 'visits.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .limit(150)
 
     res.send(visits);
 })

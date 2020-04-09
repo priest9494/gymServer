@@ -8,6 +8,60 @@ const dateFormat = require('dateformat');
 // Validation 
 const valid = require("../../validation/paymentsValidation");
 
+// Get payment by sub number
+router.post("/remove", async (req, res) => {
+    let paymentInfo = await database
+    .select('payment_amount', 'sub_id')
+    .from('payments')
+    .where({
+        id: req.body.id
+    })
+    .first()
+
+    // Increase left to pay of choosed sub
+    await database('subs')
+    .increment('left_to_pay', paymentInfo.payment_amount)
+    .where({
+        id: paymentInfo.sub_id
+    });
+
+    // Remove row from payments
+    await database
+    .delete()
+    .from('payments')
+    .where( {
+        id: req.body.id
+    });
+    
+    res.sendStatus(200);
+});
+
+// Get payment by sub full name
+router.post("/findByFio", async (req, res) => {
+    let payments = await database
+    .select('payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
+    .from('payments')
+    .join('subs', 'payments.sub_id', 'subs.id')
+    .join('clients', 'subs.client_id', 'clients.id')
+    .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+    .limit(50)
+
+    res.send(payments);
+});
+
+// Get payment by sub number
+router.post("/findBySubNumber", async (req, res) => {
+    let payments = await database
+    .select('payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
+    .from('payments')
+    .join('subs', 'payments.sub_id', 'subs.id')
+    .join('clients', 'subs.client_id', 'clients.id')
+    .where('subs.sub_number', 'ilike' , `%${req.body.sub_number}%`)
+    .limit(50)
+
+    res.send(payments);
+});
+
 // Get 50 latest payments
 router.get("/getLatest", async (req, res) => {
     let payments = await database
@@ -19,6 +73,7 @@ router.get("/getLatest", async (req, res) => {
 
     res.send(payments);
 });
+
 router.post("/isExists", async(req, res) => {
     // Check sub id exists
     let subId = await getSubIdBySubNumber(req.body.sub_number)
