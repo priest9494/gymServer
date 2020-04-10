@@ -32,15 +32,19 @@ router.post("/getBySubNumber", async (req, res) => {
 })
 
 // Get all visits route
-router.get("/getLatest", async (req, res) => {
+router.post("/getLatest", async (req, res) => {
+    var rangeResult = getDateSearchCondition(req.body.beg_range, req.body.end_range)
+
     let visits = await database
         .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
         .from('visits')
         .join('subs', 'visits.sub_id', 'subs.id')
         .join('clients', 'subs.client_id', 'clients.id')
+        .where(rangeResult.firstCond[0], rangeResult.firstCond[1], rangeResult.firstCond[2])
+        .where(rangeResult.secondCond[0], rangeResult.secondCond[1], rangeResult.secondCond[2])
         .limit(150)
 
-    res.send(visits);
+    res.send(visits)
 })
 
 // Get visit by id route
@@ -66,5 +70,27 @@ router.get("/remove/:id", async (req, res) => {
     
     res.sendStatus(200);
 });
+
+const getDateSearchCondition = function(beg, end) {
+    var firstCondition = ''
+    var secondCondition = ''
+
+    if(beg) {
+        firstCondition = ['visit_date', '>=', beg]
+    } else {
+        firstCondition = ['visits.id', '>=', 0]
+    }
+
+    if(end) {
+        secondCondition = ['visit_date', '<=', end]
+    } else {
+        secondCondition = ['visits.id', '>=', 0]
+    }
+
+    return { 
+        firstCond: firstCondition,
+        secondCond: secondCondition
+    }
+}
 
 module.exports = router;
