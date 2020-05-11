@@ -1,3 +1,5 @@
 node_modules/
 clientPhotos/
 todo.txt
+/server_crt.pem
+/server_key.pem

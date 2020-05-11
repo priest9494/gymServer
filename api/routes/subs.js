@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 
 const database = require("../../database");
-const dateFormat = require('dateformat');
 
 // Validation module (check id exists)
 const valid = require("../../validation/subsValidation");
@@ -18,8 +17,6 @@ router.post("/extend", async(req, res) => {
         id: req.body.id
     })
     .first()
-    console.log(req.body)
-    console.log(typeQuery.type_id)
 
     let typeAdditionalInfo = await database
     .select()
@@ -60,9 +57,9 @@ router.get("/getLatest", async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
-        .join('clients', 'subs.client_id', 'clients.id')
-        .join('types', 'subs.type_id', 'types.id')
-        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .leftJoin('clients', 'subs.client_id', 'clients.id')
+        .leftJoin('types', 'subs.type_id', 'types.id')
+        .leftJoin('trainers', 'subs.trainer_id', 'trainers.id')
         .limit(40)
         
     res.send(query);
@@ -73,9 +70,9 @@ router.post("/getSubByFio", async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
-        .join('clients', 'subs.client_id', 'clients.id')
-        .join('types', 'subs.type_id', 'types.id')
-        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .leftJoin('clients', 'subs.client_id', 'clients.id')
+        .leftJoin('types', 'subs.type_id', 'types.id')
+        .leftJoin('trainers', 'subs.trainer_id', 'trainers.id')
         .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
         .limit(20)
         
@@ -87,9 +84,9 @@ router.post("/getSubByPhoneNumber", async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
-        .join('clients', 'subs.client_id', 'clients.id')
-        .join('types', 'subs.type_id', 'types.id')
-        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .leftJoin('clients', 'subs.client_id', 'clients.id')
+        .leftJoin('types', 'subs.type_id', 'types.id')
+        .leftJoin('trainers', 'subs.trainer_id', 'trainers.id')
         .where('phone_number', 'ilike' , `%${req.body.phone_number}%`)
         .limit(20)
 
@@ -101,9 +98,9 @@ router.post("/getSubBySubNumber", async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
-        .join('clients', 'subs.client_id', 'clients.id')
-        .join('types', 'subs.type_id', 'types.id')
-        .join('trainers', 'subs.trainer_id', 'trainers.id')
+        .leftJoin('clients', 'subs.client_id', 'clients.id')
+        .leftJoin('types', 'subs.type_id', 'types.id')
+        .leftJoin('trainers', 'subs.trainer_id', 'trainers.id')
         .where('sub_number', 'ilike' , `%${req.body.sub_number}%`)
         .limit(20)
 
@@ -124,7 +121,6 @@ router.post("/edit", async (req, res) => {
         return;
     }
 
-    console.log(req.body)
     // Get info about old sub type
     let oldTypeAdditionalInfo = await database
     .select()

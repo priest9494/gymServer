@@ -39,12 +39,12 @@ router.post("/remove", async (req, res) => {
 // Get payment by sub full name
 router.post("/findByFio", async (req, res) => {
     let payments = await database
-    .select('payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
-    .from('payments')
-    .join('subs', 'payments.sub_id', 'subs.id')
-    .join('clients', 'subs.client_id', 'clients.id')
-    .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
-    .limit(50)
+        .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
+        .from('payments')
+        .join('subs', 'payments.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+        .orderBy('payment_date')
 
     res.send(payments);
 });
@@ -52,12 +52,12 @@ router.post("/findByFio", async (req, res) => {
 // Get payment by sub number
 router.post("/findBySubNumber", async (req, res) => {
     let payments = await database
-    .select('payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
-    .from('payments')
-    .join('subs', 'payments.sub_id', 'subs.id')
-    .join('clients', 'subs.client_id', 'clients.id')
-    .where('subs.sub_number', 'ilike' , `%${req.body.sub_number}%`)
-    .limit(50)
+        .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
+        .from('payments')
+        .join('subs', 'payments.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .where('subs.sub_number', 'ilike' , `%${req.body.sub_number}%`)
+        .orderBy('payment_date')
 
     res.send(payments);
 });
@@ -65,17 +65,18 @@ router.post("/findBySubNumber", async (req, res) => {
 // Get 50 latest payments
 router.get("/getLatest", async (req, res) => {
     let payments = await database
-    .select('payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
-    .from('payments')
-    .join('subs', 'payments.sub_id', 'subs.id')
-    .join('clients', 'subs.client_id', 'clients.id')
-    .limit(50)
+        .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
+        .from('payments')
+        .join('subs', 'payments.sub_id', 'subs.id')
+        .join('clients', 'subs.client_id', 'clients.id')
+        .orderBy('payment_date')
+        .limit(200)
 
     res.send(payments);
 });
 
+// Check sub id exists route
 router.post("/isExists", async(req, res) => {
-    // Check sub id exists
     let subId = await getSubIdBySubNumber(req.body.sub_number)
 
     res.send(subId ? true : false)
@@ -99,7 +100,8 @@ router.post("/add", async (req, res) => {
         sub_id: subId,
         payment_date: req.body.payment_date,
         payment_amount: req.body.payment_amount,
-        payment_method: req.body.payment_method
+        payment_method: req.body.payment_method,
+        interest_rate: req.body.interest_rate
     });
 
     res.sendStatus(200);

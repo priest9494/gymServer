@@ -16,5 +16,8 @@
     "knex": "^0.20.8",
     "pg-promise": "^10.3.5",
     "utf8": "^3.0.0"
+  },
+  "devDependencies": {
+    "ws": "3.3.2"
   }
 }

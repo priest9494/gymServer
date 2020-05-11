@@ -13,6 +13,7 @@ router.post("/getByFio", async (req, res) => {
         .join('subs', 'visits.sub_id', 'subs.id')
         .join('clients', 'subs.client_id', 'clients.id')
         .where('clients.fio', 'ilike' , `%${req.body.fio}%`)
+        .orderBy('visit_date')
         .limit(150)
 
     res.send(visits);
@@ -26,6 +27,7 @@ router.post("/getBySubNumber", async (req, res) => {
         .join('subs', 'visits.sub_id', 'subs.id')
         .join('clients', 'subs.client_id', 'clients.id')
         .where('subs.sub_number', 'ilike' , `%${req.body.sub_number}%`)
+        .orderBy('visit_date')
         .limit(150)
 
     res.send(visits);
@@ -42,6 +44,7 @@ router.post("/getLatest", async (req, res) => {
         .join('clients', 'subs.client_id', 'clients.id')
         .where(rangeResult.firstCond[0], rangeResult.firstCond[1], rangeResult.firstCond[2])
         .where(rangeResult.secondCond[0], rangeResult.secondCond[1], rangeResult.secondCond[2])
+        .orderBy('visit_date')
         .limit(150)
 
     res.send(visits)
