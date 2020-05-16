@@ -3,8 +3,10 @@ const router = express.Router()
 const database = require("../../database")
 const fs = require('fs')
 
+const authJwt = require("../../validation/tokenValidation")
+
 // Get latest clients (default search).
-router.get("/getLatest", async (req, res) => {
+router.get("/getLatest", authJwt, async (req, res) => {
     let query = await database
         .select()
         .from('clients')
@@ -17,7 +19,7 @@ router.get("/getLatest", async (req, res) => {
 });
 
 //Edit client by ID route
-router.post("/edit", async(req, res) => {
+router.post("/edit", authJwt, async(req, res) => {
     await database('clients')
         .update({
             fio: req.body.fio,
@@ -31,7 +33,6 @@ router.post("/edit", async(req, res) => {
             id: req.body.id
         })
 
-    
     if(req.body.photo) {
         var filename = req.body.id + '.png'
         var base64Data = req.body.photo.replace(/^data:image\/png;base64,/, "");
@@ -45,7 +46,7 @@ router.post("/edit", async(req, res) => {
 })
 
 // Get client info by phone number. {phone_number}
-router.post("/getClientByPhoneNumber", async (req, res) => {
+router.post("/getClientByPhoneNumber", authJwt, async (req, res) => {
     let query = await database
         .select()
         .from('clients')
@@ -59,7 +60,7 @@ router.post("/getClientByPhoneNumber", async (req, res) => {
 });
 
 // Get client info by FIO. {fio}
-router.post("/getClientByFio", async (req, res) => {
+router.post("/getClientByFio", authJwt, async (req, res) => {
     let query = await database
         .select()
         .from('clients')
@@ -73,7 +74,7 @@ router.post("/getClientByFio", async (req, res) => {
 });
 
 // Add client route
-router.post("/add", async (req, res) => {
+router.post("/add", authJwt, async (req, res) => {
     const id = await database("clients")
         .returning('id')
         .insert({
@@ -95,7 +96,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Get all clients route
-router.get("/get", async (req, res) => {
+router.get("/get", authJwt, async (req, res) => {
     let clients = await database
     .select()
     .from('clients');
@@ -104,7 +105,7 @@ router.get("/get", async (req, res) => {
 })
 
 // Get client by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let cliens = await database
     .select()
     .from('clients')
@@ -116,7 +117,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Remove client by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('clients')

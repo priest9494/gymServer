@@ -60,6 +60,12 @@ CREATE TABLE visits (
     visit_time time
 );
 
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username varchar(20),
+    userpass varchar(30)
+);
+
 -- Ограничения на таблицы
 ALTER TABLE subs ADD CHECK (type_id > 0);
 ALTER TABLE subs ADD CHECK (client_id > 0);

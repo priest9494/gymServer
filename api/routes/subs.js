@@ -4,11 +4,11 @@ const router = express.Router();
 
 const database = require("../../database");
 
-// Validation module (check id exists)
-const valid = require("../../validation/subsValidation");
+const valid = require("../../validation/subsValidation")
+const authJwt = require("../../validation/tokenValidation")
 
 // Extend sub route
-router.post("/extend", async(req, res) => {
+router.post("/extend", authJwt, async(req, res) => {
     // Get info about sub type
     let typeQuery = await database
     .select('type_id', 'left_to_pay')
@@ -40,7 +40,7 @@ router.post("/extend", async(req, res) => {
     res.sendStatus(200)
 })
 // Check sub number uniq route
-router.post("/checkUniq", async(req, res) => {
+router.post("/checkUniq", authJwt, async(req, res) => {
     let field = await database('subs')
         .select()
         .where({
@@ -53,7 +53,7 @@ router.post("/checkUniq", async(req, res) => {
 })
 
 // Get 10 latest subs route (default search).
-router.get("/getLatest", async (req, res) => {
+router.get("/getLatest", authJwt, async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
@@ -66,7 +66,7 @@ router.get("/getLatest", async (req, res) => {
 });
 
 // Get sub info by FIO. {sub_number}
-router.post("/getSubByFio", async (req, res) => {
+router.post("/getSubByFio", authJwt, async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
@@ -80,7 +80,7 @@ router.post("/getSubByFio", async (req, res) => {
 });
 
 // Get sub info by phone number route. {sub_number}
-router.post("/getSubByPhoneNumber", async (req, res) => {
+router.post("/getSubByPhoneNumber", authJwt, async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
@@ -94,7 +94,7 @@ router.post("/getSubByPhoneNumber", async (req, res) => {
 });
 
 // Get sub info by sub number route. {sub_number}
-router.post("/getSubBySubNumber", async (req, res) => {
+router.post("/getSubBySubNumber", authJwt, async (req, res) => {
     let query = await database
         .select('subs.id as sub_id', 'sub_number', 'start_time', 'subs.note', 'begin_date', 'end_date', 'training_left', 'left_to_pay', 'clients.fio as client_fio', 'clients.id as client_id', 'phone_number', 'title', 'training', 'cost', 'types.id as type_id', 'trainers.id as trainer_id', 'trainers.fio as trainer_fio')
         .from('subs')
@@ -108,7 +108,7 @@ router.post("/getSubBySubNumber", async (req, res) => {
 });
 
 // Edit sub route
-router.post("/edit", async (req, res) => {
+router.post("/edit", authJwt, async (req, res) => {
     // ID's validation
     let validatedIDs = await valid({
         type_id: req.body.type_id,
@@ -160,7 +160,7 @@ router.post("/edit", async (req, res) => {
 });
 
 // Add sub route
-router.post("/add", async (req, res) => {
+router.post("/add", authJwt, async (req, res) => {
     // ID's validation
     let validatedIDs = await valid({
         type_id: req.body.type_id,
@@ -201,7 +201,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Get all subs route
-router.get("/get", async (req, res) => {
+router.get("/get", authJwt, async (req, res) => {
     let types = await database
     .select()
     .from('subs');
@@ -210,7 +210,7 @@ router.get("/get", async (req, res) => {
 })
 
 // Get sub by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let types = await database
     .select()
     .from('subs')
@@ -222,7 +222,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Remove sub by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('subs')

@@ -12,6 +12,7 @@ const paymentsRoutes = require("./api/routes/payments")
 const visitsRoutes = require("./api/routes/visits")
 const subMark = require("./api/routes/complexQueries/subMark")
 const report = require("./api/routes/complexQueries/report")
+const auth = require("./api/routes/auth")
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use("/v1/payments", paymentsRoutes)
 app.use("/v1/visits", visitsRoutes)
 app.use("/v1/report", report)
 app.use("/v1/mark", subMark)
+app.use("/v1/auth", auth)
 
 https.createServer({
   key: fs.readFileSync('server_key.pem'),

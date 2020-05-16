@@ -2,8 +2,10 @@ const express = require("express")
 const router = express.Router()
 const database = require("../../../database")
 
+const authJwt = require("../../../validation/tokenValidation")
+
 // Get trainer list route
-router.get("/getTrainerList", async (req, res) => {
+router.get("/getTrainerList", authJwt, async (req, res) => {
     let query = await database
         .select('trainers.id', 'trainers.fio')
         .from('trainers')
@@ -12,7 +14,7 @@ router.get("/getTrainerList", async (req, res) => {
 });
 
 // Get report route
-router.post("/getReport", async (req, res) => {
+router.post("/getReport", authJwt, async (req, res) => {
     // Для поиска с любыми значениями дат
     var rangeResult = getDateSearchCondition(req.body.beg, req.body.end)
 

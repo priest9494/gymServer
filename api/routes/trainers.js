@@ -3,8 +3,10 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+const authJwt = require("../../validation/tokenValidation")
+
 // Get 50 latest trainers (default search).
-router.get("/getLatest", async (req, res) => {
+router.get("/getLatest", authJwt, async (req, res) => {
     let query = await database
         .select()
         .from('trainers')
@@ -14,7 +16,7 @@ router.get("/getLatest", async (req, res) => {
 });
 
 //Edit trainer by ID route
-router.post("/edit", async(req, res) => {
+router.post("/edit", authJwt, async(req, res) => {
     await database('trainers')
         .update({
             fio: req.body.fio,
@@ -28,7 +30,7 @@ router.post("/edit", async(req, res) => {
 })
 
 // Find trainer by fio route
-router.post("/findByFio", async(req, res) => {
+router.post("/findByFio", authJwt, async(req, res) => {
     let query = await database
         .select()
         .from('trainers')
@@ -39,7 +41,7 @@ router.post("/findByFio", async(req, res) => {
 })
 
 // Get all trainers route
-router.get("/get", async (req, res) => {
+router.get("/get", authJwt, async (req, res) => {
     let trainers = await database
     .select()
     .from('trainers');
@@ -48,7 +50,7 @@ router.get("/get", async (req, res) => {
 })
 
 // Get trainer by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let trainers = await database
     .select()
     .from('trainers')
@@ -60,7 +62,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Add trainer route
-router.post("/add", async (req, res) => {
+router.post("/add", authJwt, async (req, res) => {
     await database("trainers").
     insert({
         fio: req.body.fio,
@@ -72,7 +74,7 @@ router.post("/add", async (req, res) => {
 
 
 // Remove trainer by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('trainers')
@@ -82,31 +84,5 @@ router.get("/remove/:id", async (req, res) => {
 
     res.sendStatus(200); 
 });
-
-// Fill trainers route
-router.get("/fill", (req, res) => {
-    let nodes = [
-        {
-            fio: "Дунаев Никита Юрьевич",
-            date_birth: "27-05-1998"
-        }, 
-        {
-            fio: "Трененов Тренер Тренерович",
-            date_birth: "13-11-1980"
-        },
-        {
-            fio: "Занятьева Занатия Занятьевна",
-            date_birth: "24-01-1991"
-        }
-    ];
-
-    nodes.forEach(async element => {
-        await database("trainers").
-        insert(element);
-    });
-
-    res.sendStatus(200);
-});
-
 
 module.exports = router;

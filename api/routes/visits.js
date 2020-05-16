@@ -5,8 +5,10 @@ const router = express.Router();
 const database = require("../../database");
 const dateFormat = require('dateformat');
 
+const authJwt = require("../../validation/tokenValidation")
+
 // Get visits by fio route
-router.post("/getByFio", async (req, res) => {
+router.post("/getByFio", authJwt, async (req, res) => {
     let visits = await database
         .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
         .from('visits')
@@ -20,7 +22,7 @@ router.post("/getByFio", async (req, res) => {
 })
 
 // Get visits by fio route
-router.post("/getBySubNumber", async (req, res) => {
+router.post("/getBySubNumber", authJwt, async (req, res) => {
     let visits = await database
         .select('visits.id as id', 'clients.fio', 'subs.sub_number', 'visits.visit_date', 'visits.visit_time')
         .from('visits')
@@ -34,7 +36,7 @@ router.post("/getBySubNumber", async (req, res) => {
 })
 
 // Get all visits route
-router.post("/getLatest", async (req, res) => {
+router.post("/getLatest", authJwt, async (req, res) => {
     var rangeResult = getDateSearchCondition(req.body.beg_range, req.body.end_range)
 
     let visits = await database
@@ -51,7 +53,7 @@ router.post("/getLatest", async (req, res) => {
 })
 
 // Get visit by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let visits = await database
     .select()
     .from('visits')
@@ -63,7 +65,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Remove visit by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('visits')

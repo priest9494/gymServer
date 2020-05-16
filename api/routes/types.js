@@ -3,8 +3,10 @@ const express = require("express");
 const router = express.Router();
 const database = require("../../database");
 
+const authJwt = require("../../validation/tokenValidation")
+
 // Get 50 latest trainers route (default search).
-router.get("/getLatest", async (req, res) => {
+router.get("/getLatest", authJwt, async (req, res) => {
     let query = await database
         .select()
         .from('types')
@@ -14,7 +16,7 @@ router.get("/getLatest", async (req, res) => {
 });
 
 //Edit sub type by ID route
-router.post("/edit", async(req, res) => {
+router.post("/edit", authJwt, async(req, res) => {
     await database('types')
         .update({
             title: req.body.title,
@@ -29,7 +31,7 @@ router.post("/edit", async(req, res) => {
 })
 
 // Find type by title route
-router.post("/findByTitle", async(req, res) => {
+router.post("/findByTitle", authJwt, async(req, res) => {
     let query = await database
     .select()
     .from('types')
@@ -40,7 +42,7 @@ router.post("/findByTitle", async(req, res) => {
 })
 
 // Add type route
-router.post("/add", async (req, res) => {
+router.post("/add", authJwt, async (req, res) => {
     await database('types').
     insert({
         title: req.body.title,
@@ -52,7 +54,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Get all types route
-router.get("/get", async (req, res) => {
+router.get("/get", authJwt, async (req, res) => {
     let types = await database
     .select()
     .from('types');
@@ -61,7 +63,7 @@ router.get("/get", async (req, res) => {
 })
 
 // Get type by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let types = await database
     .select()
     .from('types')
@@ -73,40 +75,12 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Remove type by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('types')
     .where({
         id: req.params.id
-    });
-
-    res.sendStatus(200);
-});
-
-// Fill types route
-router.get("/fill", async (req, res) => {
-    let nodes = [
-        {
-            title: 'Бокс',
-            cost: '1000',
-            training: '10'
-        },
-        {
-            title: 'Качалка',
-            cost: '2000',
-            training: '12'
-        },
-        {
-            title: 'Каратэ',
-            cost: '3000',
-            training: '30'
-        }
-    ];
-
-    nodes.forEach(async element => {
-        await database("types").
-        insert(element);
     });
 
     res.sendStatus(200);

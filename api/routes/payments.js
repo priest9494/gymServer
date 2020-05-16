@@ -1,15 +1,15 @@
 // test/api/routes/payments.js
-const express = require("express");
-const router = express.Router();
+const express = require("express")
+const router = express.Router()
 
-const database = require("../../database");
-const dateFormat = require('dateformat');
+const database = require("../../database")
+const dateFormat = require('dateformat')
 
-// Validation 
-const valid = require("../../validation/paymentsValidation");
+const authJwt = require("../../validation/tokenValidation")
+const valid = require("../../validation/paymentsValidation")
 
 // Get payment by sub number
-router.post("/remove", async (req, res) => {
+router.post("/remove", authJwt, async (req, res) => {
     let paymentInfo = await database
     .select('payment_amount', 'sub_id')
     .from('payments')
@@ -37,7 +37,7 @@ router.post("/remove", async (req, res) => {
 });
 
 // Get payment by sub full name
-router.post("/findByFio", async (req, res) => {
+router.post("/findByFio", authJwt, async (req, res) => {
     let payments = await database
         .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
         .from('payments')
@@ -50,7 +50,7 @@ router.post("/findByFio", async (req, res) => {
 });
 
 // Get payment by sub number
-router.post("/findBySubNumber", async (req, res) => {
+router.post("/findBySubNumber", authJwt, async (req, res) => {
     let payments = await database
         .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
         .from('payments')
@@ -63,7 +63,7 @@ router.post("/findBySubNumber", async (req, res) => {
 });
 
 // Get 50 latest payments
-router.get("/getLatest", async (req, res) => {
+router.get("/getLatest", authJwt, async (req, res) => {
     let payments = await database
         .select('interest_rate', 'payments.id as payment_id', 'payment_date', 'payment_amount', 'payment_method', 'clients.fio as fio', 'subs.sub_number as sub_number')
         .from('payments')
@@ -76,14 +76,14 @@ router.get("/getLatest", async (req, res) => {
 });
 
 // Check sub id exists route
-router.post("/isExists", async(req, res) => {
+router.post("/isExists", authJwt, async(req, res) => {
     let subId = await getSubIdBySubNumber(req.body.sub_number)
 
     res.send(subId ? true : false)
 })
 
 // Add payment route
-router.post("/add", async (req, res) => {
+router.post("/add", authJwt, async (req, res) => {
     // Get sub id by sub number 
     var subId = await getSubIdBySubNumber(req.body.sub_number)
 
@@ -108,7 +108,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Get all payments route
-router.get("/get", async (req, res) => {
+router.get("/get", authJwt, async (req, res) => {
     let payments = await database
     .select()
     .from('payments');
@@ -117,7 +117,7 @@ router.get("/get", async (req, res) => {
 })
 
 // Get payment by id route
-router.get("/get/:id", async (req, res) => {
+router.get("/get/:id", authJwt, async (req, res) => {
     let payments = await database
     .select()
     .from('payments')
@@ -129,7 +129,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 // Remove payment by id route
-router.get("/remove/:id", async (req, res) => {
+router.get("/remove/:id", authJwt, async (req, res) => {
     await database
     .delete()
     .from('payments')

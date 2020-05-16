@@ -4,10 +4,10 @@ const fs = require('fs')
 const router = express.Router()
 const database = require("../../../database")
 const dateFormat = require('dateformat')
-
+const authJwt = require("../../../validation/tokenValidation");
 
 // Get client info route. {sub_number}
-router.post("/getInfo", async (req, res) => {
+router.post("/getInfo", authJwt, async (req, res) => {
     var query = await database
         .select('subs.id as sub_id','begin_date', 'subs.note', 'start_time', 'end_date', 'training_left', 'left_to_pay', 'fio', 'title', 'training', 'cost', 'clients.id as id')
         .from('subs')
@@ -30,8 +30,7 @@ router.post("/getInfo", async (req, res) => {
 });
 
 // Register client route. {sub_number}
-router.post("/markVisit", async (req, res) => {
-    console.log(req.body)
+router.post("/markVisit", authJwt, async (req, res) => {
     // Decrease training left of sub
     await database('subs')
     .decrement('training_left', 1)
@@ -47,9 +46,7 @@ router.post("/markVisit", async (req, res) => {
             visit_date: dateFormat(new Date(), 'yyyy-mm-dd'),
             visit_time: (new Date()).toLocaleTimeString()
         });
-    } catch(err) {
-        console.log(err)
-    }
+    } catch(err) {}
 
     res.sendStatus(200);
 });
